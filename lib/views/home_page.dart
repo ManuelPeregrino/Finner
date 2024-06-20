@@ -122,7 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: ElevatedButton(
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
+                      backgroundColor: Colors.white70,
                       foregroundColor: Colors.black, // Color del icono
                       minimumSize:
                           const Size(55, 55), // Tamaño mínimo del botón
