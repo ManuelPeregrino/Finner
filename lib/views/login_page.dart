@@ -66,7 +66,8 @@ class LoginPage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const MyHomePage(title: 'Home')),
+                      builder: (context) =>
+                          const MyHomePage(title: 'Recordatorios')),
                 );
               },
               style: ElevatedButton.styleFrom(
