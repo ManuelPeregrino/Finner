@@ -90,7 +90,7 @@ class _RemindersPageState extends State<RemindersPage> {
                 Expanded(
                   child: TextField(
                     decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.search),
+                      prefixIcon: const Icon(Icons.search),
                       hintText: 'Search',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -101,9 +101,9 @@ class _RemindersPageState extends State<RemindersPage> {
                     ),
                   ),
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 IconButton(
-                  icon: Icon(Icons.filter_alt),
+                  icon: const Icon(Icons.filter_alt),
                   onPressed: () {
                     // Acción del botón de filtro (actualmente no hace nada)
                   },

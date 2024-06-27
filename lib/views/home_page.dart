@@ -30,11 +30,11 @@ class HomePage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(16.0),
                         ),
                         child: Padding(
-                          padding: const EdgeInsets.all(16.0),
+                          padding: const EdgeInsets.all(14.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
+                              const Text(
                                 'Dashboard',
                                 style: TextStyle(
                                   fontSize: 24,
@@ -44,7 +44,7 @@ class HomePage extends StatelessWidget {
                               SizedBox(height: 16),
                               // Placeholder for graph
                               Container(
-                                height: 150,
+                                height: 135,
                                 color: Colors.grey[300],
                               ),
                             ],
@@ -53,7 +53,7 @@ class HomePage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(width: 16),
+                  const SizedBox(width: 3),
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
@@ -65,21 +65,21 @@ class HomePage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(16.0),
                         ),
                         child: Padding(
-                          padding: const EdgeInsets.all(16.0),
+                          padding: const EdgeInsets.all(13.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
+                              const Text(
                                 'Reminders',
                                 style: TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              SizedBox(height: 16),
+                              const SizedBox(height: 16),
                               // Placeholder for reminders
                               Text(
-                                '• Write blog post for demo day\n• Publish blog page\n• Add gradients to design system\n• Responsive behavior doesn’t work\n• Confirmation states not responsive',
+                                '• Write blog post for demo day\n• Publish blog page\n• Add gradients to design',
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: Colors.grey[600],
@@ -93,7 +93,7 @@ class HomePage extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Card(
                 elevation: 4.0,
                 shape: RoundedRectangleBorder(
@@ -104,14 +104,14 @@ class HomePage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         'Select Date',
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       TableCalendar(
                         firstDay: DateTime.utc(2010, 10, 16),
                         lastDay: DateTime.utc(2030, 3, 14),

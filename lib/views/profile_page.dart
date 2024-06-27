@@ -17,7 +17,7 @@ class ProfilePage extends StatelessWidget {
             );
           },
         ),
-        title: const Text('Perfil'),
+        title: const Text('Profile'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -25,7 +25,7 @@ class ProfilePage extends StatelessWidget {
           child: Column(
             children: [
               const SizedBox(height: 16),
-              CircleAvatar(
+              const CircleAvatar(
                 radius: 50,
                 backgroundImage: AssetImage('assets/images/profile.avif'),
               ),
@@ -35,16 +35,16 @@ class ProfilePage extends StatelessWidget {
                   // Acción para editar la imagen de perfil
                 },
                 child: const Text(
-                  'Editar imagen de perfil',
+                  'Edit profile image',
                   style: TextStyle(color: Colors.blue),
                 ),
               ),
               const SizedBox(height: 16),
-              _buildProfileItem('Nombre', 'Diego Carmona Bernal'),
-              _buildProfileItem('Nombre de usuario', '@cbdiegox'),
-              _buildProfileItem('Correo', 'cbdiegox@gmail.com'),
+              _buildProfileItem('Name', 'Diego Carmona Bernal'),
+              _buildProfileItem('Username', '@cbdiegox'),
+              _buildProfileItem('Email', 'cbdiegox@gmail.com'),
               _buildProfileLinks(['website.net', 'mylink.net', 'yourlink.net']),
-              _buildProfileItem('Biografia', 'Descripción del usuario.'),
+              _buildProfileItem('Bio', 'User description.'),
             ],
           ),
         ),
@@ -53,15 +53,15 @@ class ProfilePage extends StatelessWidget {
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: 'Inicio',
+            label: 'Start',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
-            label: 'Configuración',
+            label: 'Settings',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            label: 'Perfil',
+            label: 'Profile',
           ),
         ],
         currentIndex: 2,
@@ -122,7 +122,7 @@ class ProfilePage extends StatelessWidget {
         ),
         ListTile(
           title: const Text(
-            '+ Agregar link',
+            '+ Add link',
             style: TextStyle(color: Colors.blue),
           ),
           onTap: () {

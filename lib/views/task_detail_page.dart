@@ -30,21 +30,21 @@ class TaskDetailPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Detalle de la tarea $task'),
+        title: Text('Task details: $task'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Título:',
+            const Text(
+              'Title:',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
-            Text(title, style: TextStyle(fontSize: 16)),
-            SizedBox(height: 16),
-            Text(
-              'Prioridad:',
+            Text(title, style: const TextStyle(fontSize: 16)),
+            const SizedBox(height: 16),
+            const Text(
+              'Priority:',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
             Container(

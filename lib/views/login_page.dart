@@ -18,18 +18,18 @@ class LoginPage extends StatelessWidget {
             ),
             const SizedBox(height: 32),
             const Text(
-              'Crear una cuenta',
+              'Create new account',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Ingrese su correo electrónico para registrarse en esta aplicación',
-              style: TextStyle(fontSize: 16, color: Colors.grey),
-            ),
+            // const Text(
+            //   'Ingrese su correo electrónico para registrarse en esta aplicación ',
+            //   style: TextStyle(fontSize: 16, color: Colors.grey),
+            // ),
             const SizedBox(height: 32),
             TextField(
               decoration: InputDecoration(
-                hintText: 'correo@dominio.com',
+                hintText: 'user@email.com',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -45,7 +45,7 @@ class LoginPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              child: const Text('Regístrese con correo electrónico',
+              child: const Text('Register with email',
                   style: TextStyle(color: Colors.white)),
             ),
             const SizedBox(height: 16),
@@ -54,7 +54,7 @@ class LoginPage extends StatelessWidget {
                 Expanded(child: Divider(color: Colors.grey)),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Text('o continuar con',
+                  child: Text('or continue with',
                       style: TextStyle(color: Colors.grey)),
                 ),
                 Expanded(child: Divider(color: Colors.grey)),
@@ -83,7 +83,7 @@ class LoginPage extends StatelessWidget {
             ),
             const SizedBox(height: 32),
             const Text(
-              'Al hacer clic en continuar, acepta nuestros Términos de servicio y Política de privacidad',
+              'By clicking continue you are accepting our Terms of Service and Privacy Policy',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 12, color: Colors.grey),
             ),
