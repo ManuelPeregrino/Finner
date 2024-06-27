@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'task_detail_page.dart'; // Asegúrate de que la ruta sea correcta
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -89,6 +90,18 @@ class _MyHomePageState extends State<MyHomePage> {
           style: const TextStyle(color: Colors.white),
         ),
       ),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => TaskDetailPage(
+              task: reminder['task']!,
+              title: reminder['title']!,
+              priority: reminder['priority']!,
+            ),
+          ),
+        );
+      },
     );
   }
 

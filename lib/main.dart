@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'views/login_page.dart';
+import 'views/profile_page.dart';
+import 'views/splash_screen_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,19 +15,16 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Finner',
       theme: ThemeData(
-        scaffoldBackgroundColor:
-            Colors.white, // Fondo blanco para toda la aplicación
+        scaffoldBackgroundColor: Colors.white,
         appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.white, // Fondo blanco para la AppBar
-          iconTheme:
-              IconThemeData(color: Colors.black), // Íconos negros en la AppBar
-          titleTextStyle: TextStyle(
-              color: Colors.black, fontSize: 20), // Título negro en la AppBar
+          backgroundColor: Colors.white,
+          iconTheme: IconThemeData(color: Colors.black),
+          titleTextStyle: TextStyle(color: Colors.black, fontSize: 20),
         ),
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
         useMaterial3: true,
       ),
-      home: const LoginPage(),
+      home: const ProfilePage(), // Cambiado a DashboardPage
     );
   }
 }
