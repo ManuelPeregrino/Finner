@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'home_page.dart'; // Asegúrate de que la ruta sea correcta
+import 'home_page.dart'; // Ensure the path is correct
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -49,8 +49,8 @@ class LoginPage extends StatelessWidget {
                   style: TextStyle(color: Colors.white)),
             ),
             const SizedBox(height: 16),
-            Row(
-              children: const [
+            const Row(
+              children: [
                 Expanded(child: Divider(color: Colors.grey)),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8.0),
@@ -65,9 +65,7 @@ class LoginPage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          const MyHomePage(title: 'Recordatorios')),
+                  MaterialPageRoute(builder: (context) => const HomePage()),
                 );
               },
               style: ElevatedButton.styleFrom(
