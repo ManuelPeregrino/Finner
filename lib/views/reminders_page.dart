@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'reminders_details_page.dart'; // Asegúrate de que la ruta sea correcta
+import 'task_detail_page.dart'; // Importa TaskDetailPage
 
 class RemindersPage extends StatefulWidget {
   const RemindersPage({super.key, required this.title});
@@ -12,65 +12,29 @@ class RemindersPage extends StatefulWidget {
 
 class _RemindersPageState extends State<RemindersPage> {
   final List<Map<String, String>> reminders = [
-    {
-      'task': 'FIG-121',
-      'title': 'Write blog post for demo day',
-      'priority': 'Alto'
-    },
-    {'task': 'FIG-122', 'title': 'Publish blog page', 'priority': 'Bajo'},
-    {
-      'task': 'FIG-123',
-      'title': 'Add gradients to design sys...',
-      'priority': 'Medio'
-    },
-    {
-      'task': 'FIG-124',
-      'title': 'Responsive behavior doesn\'t...',
-      'priority': 'Medio'
-    },
-    {
-      'task': 'FIG-125',
-      'title': 'Confirmation states not ren...',
-      'priority': 'Medio'
-    },
-    {
-      'task': 'FIG-126',
-      'title': 'Revise copy on the About p...',
-      'priority': 'Bajo'
-    },
-    {
-      'task': 'FIG-127',
-      'title': 'Text wrapping is awkward o...',
-      'priority': 'Bajo'
-    },
-    {'task': 'FIG-128', 'title': 'Publish HackerNews post', 'priority': 'Bajo'},
-    {
-      'task': 'FIG-129',
-      'title': 'Review image licensing for...',
-      'priority': 'Alto'
-    },
-    {
-      'task': 'FIG-130',
-      'title': 'Accessibility focused state f...',
-      'priority': 'Alto'
-    },
-    {
-      'task': 'FIG-131',
-      'title': 'Header IA revision to suppo...',
-      'priority': 'Bajo'
-    },
+    {'task': 'FIG-121', 'title': 'Write blog post for demo day', 'priority': 'High'},
+    {'task': 'FIG-122', 'title': 'Publish blog page', 'priority': 'Low'},
+    {'task': 'FIG-123', 'title': 'Add gradients to design sys...', 'priority': 'Medium'},
+    {'task': 'FIG-124', 'title': 'Responsive behavior doesn\'t...', 'priority': 'Medium'},
+    {'task': 'FIG-125', 'title': 'Confirmation states not ren...', 'priority': 'Medium'},
+    {'task': 'FIG-126', 'title': 'Revise copy on the About p...', 'priority': 'Low'},
+    {'task': 'FIG-127', 'title': 'Text wrapping is awkward o...', 'priority': 'Low'},
+    {'task': 'FIG-128', 'title': 'Publish HackerNews post', 'priority': 'Low'},
+    {'task': 'FIG-129', 'title': 'Review image licensing for...', 'priority': 'High'},
+    {'task': 'FIG-130', 'title': 'Accessibility focused state f...', 'priority': 'High'},
+    {'task': 'FIG-131', 'title': 'Header IA revision to suppo...', 'priority': 'Low'},
   ];
 
   Widget _buildReminderItem(Map<String, String> reminder) {
     Color priorityColor;
     switch (reminder['priority']) {
-      case 'Alto':
+      case 'High':
         priorityColor = Colors.red;
         break;
-      case 'Medio':
+      case 'Medium':
         priorityColor = Colors.orange;
         break;
-      case 'Bajo':
+      case 'Low':
       default:
         priorityColor = Colors.green;
         break;
@@ -109,61 +73,44 @@ class _RemindersPageState extends State<RemindersPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: const Text('Reminders'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushNamed(context, '/home');
+          },
+        ),
       ),
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(15.0),
+            padding: const EdgeInsets.all(16.0),
             child: Row(
               children: [
                 Expanded(
                   child: TextField(
                     decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.search, color: Colors.black),
-                      labelText: 'Buscar',
-                      labelStyle: const TextStyle(color: Colors.black),
+                      prefixIcon: Icon(Icons.search),
+                      hintText: 'Search',
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
                       ),
+                      filled: true,
+                      fillColor: Colors.grey[200],
                     ),
                   ),
                 ),
-                const SizedBox(width: 8),
-                SizedBox(
-                  height: 48, // Altura del TextField
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white70,
-                      foregroundColor: Colors.black, // Color del icono
-                      minimumSize:
-                          const Size(55, 55), // Tamaño mínimo del botón
-                      padding: EdgeInsets.zero, // Sin relleno interno
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                            4), // Ajuste del radio de las esquinas
-                      ),
-                    ),
-                    child: const Icon(Icons.filter_alt_outlined),
-                  ),
+                SizedBox(width: 8),
+                IconButton(
+                  icon: Icon(Icons.filter_alt),
+                  onPressed: () {
+                    // Acción del botón de filtro (actualmente no hace nada)
+                  },
                 ),
               ],
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Tarea', style: TextStyle(fontWeight: FontWeight.bold)),
-                Text('Titulo', style: TextStyle(fontWeight: FontWeight.bold)),
-                Text('Prioridad',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-              ],
-            ),
-          ),
-          const Divider(),
           Expanded(
             child: ListView.builder(
               itemCount: reminders.length,

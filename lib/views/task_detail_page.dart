@@ -16,13 +16,13 @@ class TaskDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     Color priorityColor;
     switch (priority) {
-      case 'Alto':
+      case 'High':
         priorityColor = Colors.red;
         break;
-      case 'Medio':
+      case 'Medium':
         priorityColor = Colors.orange;
         break;
-      case 'Bajo':
+      case 'Low':
       default:
         priorityColor = Colors.green;
         break;

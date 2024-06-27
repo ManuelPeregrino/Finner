@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'home_page.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -10,7 +11,10 @@ class ProfilePage extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const HomePage()),
+            );
           },
         ),
         title: const Text('Perfil'),
@@ -60,9 +64,18 @@ class ProfilePage extends StatelessWidget {
             label: 'Perfil',
           ),
         ],
-        currentIndex: 2, // Índice del elemento seleccionado
+        currentIndex: 2,
         onTap: (index) {
-          // Acción al tocar un ítem del BottomNavigationBar
+          if (index == 0) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const HomePage()),
+            );
+          } else if (index == 1) {
+            // Handle settings navigation
+          } else if (index == 2) {
+            Navigator.pushReplacementNamed(context, '/profile');
+          }
         },
       ),
     );
@@ -118,32 +131,6 @@ class ProfilePage extends StatelessWidget {
         ),
         const Divider(),
       ],
-    );
-  }
-}
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Configuración del Perfil',
-      theme: ThemeData(
-        scaffoldBackgroundColor: Colors.white,
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.white,
-          iconTheme: IconThemeData(color: Colors.black),
-          titleTextStyle: TextStyle(color: Colors.black, fontSize: 20),
-        ),
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
-        useMaterial3: true,
-      ),
-      home: const ProfilePage(),
     );
   }
 }
