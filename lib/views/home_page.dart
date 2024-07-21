@@ -1,155 +1,448 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({Key? key});
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  List<dynamic> transactions = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchTransactions();
+  }
+
+  Future<void> _fetchTransactions() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+    int? userId = prefs.getInt('user_id');
+
+    if (token != null && userId != null) {
+      try {
+        final response = await http.get(
+          Uri.parse('http://23.21.23.111/transaction/user/$userId'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        );
+
+        if (response.statusCode == 200) {
+          final responseBody = jsonDecode(response.body);
+          setState(() {
+            transactions = responseBody;
+            transactions.sort((a, b) =>
+                DateTime.parse(b['date']).compareTo(DateTime.parse(a['date'])));
+            if (transactions.length > 3) {
+              transactions = transactions.sublist(0, 3);
+            }
+            isLoading = false;
+          });
+        } else {
+          print('Error fetching transactions: ${response.body}');
+          setState(() {
+            isLoading = false;
+          });
+        }
+      } catch (e) {
+        print('Error: $e');
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+  }
+
+  void _showCreateTransactionModal(DateTime selectedDate) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return DraggableScrollableSheet(
+          initialChildSize: 0.8,
+          maxChildSize: 0.8,
+          minChildSize: 0.3,
+          expand: false,
+          builder: (context, scrollController) {
+            return Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(16.0),
+                  topRight: Radius.circular(16.0),
+                ),
+              ),
+              child: CreateTransactionForm(
+                selectedDate: selectedDate,
+              ),
+            );
+          },
+        );
+      },
+    ).then((value) {
+      if (value == true) {
+        _fetchTransactions();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('FINNER'),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(context, '/dashboard');
-                      },
-                      child: Card(
-                        elevation: 4.0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16.0),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(14.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Dashboard',
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(height: 16),
-                              // Placeholder for graph
-                              Container(
-                                height: 135,
-                                color: Colors.grey[300],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 3),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(context, '/reminders');
-                      },
-                      child: Card(
-                        elevation: 4.0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16.0),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(13.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Reminders',
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-                              // Placeholder for reminders
-                              Text(
-                                '• Write blog post for demo day\n• Publish blog page\n• Add gradients to design',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Card(
-                elevation: 4.0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16.0),
-                ),
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('FINNER'),
+          automaticallyImplyLeading: false,
+        ),
+        body: isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Select Date',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
+                      GestureDetector(
+                        onTap: () async {
+                          final result =
+                              await Navigator.pushNamed(context, '/reminders');
+                          if (result == true) {
+                            _fetchTransactions();
+                          }
+                        },
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: Card(
+                            elevation: 4.0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16.0),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Últimos gastos e ingresos',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children:
+                                        transactions.map<Widget>((transaction) {
+                                      String type =
+                                          transaction['type'].toString();
+                                      String amount =
+                                          transaction['amount'].toString();
+                                      DateTime parsedDate =
+                                          DateTime.parse(transaction['date']);
+                                      String date = DateFormat('dd/MM/yyyy')
+                                          .format(parsedDate);
+
+                                      String typeText = type == 'income'
+                                          ? 'Ingreso'
+                                          : 'Gasto';
+                                      Color textColor = type == 'income'
+                                          ? Colors.green
+                                          : Colors.red;
+
+                                      return Column(
+                                        children: [
+                                          ListTile(
+                                            contentPadding: EdgeInsets.zero,
+                                            leading: Icon(
+                                              type == 'income'
+                                                  ? Icons.arrow_downward
+                                                  : Icons.arrow_upward,
+                                              color: textColor,
+                                            ),
+                                            title: Text(
+                                              '$typeText - \$$amount',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600,
+                                                color: textColor,
+                                              ),
+                                            ),
+                                            subtitle: Text(
+                                              date,
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.grey[600],
+                                              ),
+                                            ),
+                                          ),
+                                          Divider(
+                                            color: Colors.grey[300],
+                                            thickness: 1,
+                                          ),
+                                        ],
+                                      );
+                                    }).toList(),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                       const SizedBox(height: 16),
-                      TableCalendar(
-                        firstDay: DateTime.utc(2010, 10, 16),
-                        lastDay: DateTime.utc(2030, 3, 14),
-                        focusedDay: DateTime.now(),
+                      Card(
+                        elevation: 4.0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16.0),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Crear un gasto o ingreso',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              TableCalendar(
+                                firstDay: DateTime.utc(2010, 10, 16),
+                                lastDay: DateTime.utc(2030, 3, 14),
+                                focusedDay: DateTime.now(),
+                                onDaySelected: (selectedDay, focusedDay) {
+                                  _showCreateTransactionModal(selectedDay);
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ],
                   ),
                 ),
               ),
+        bottomNavigationBar: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Inicio',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.show_chart),
+              label: 'Gráficas',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Perfil',
+            ),
+          ],
+          currentIndex: 0,
+          onTap: (index) {
+            switch (index) {
+              case 0:
+                Navigator.pushNamed(context, '/home');
+                break;
+              case 1:
+                Navigator.pushNamed(context, '/dashboard');
+                break;
+              case 2:
+                Navigator.pushNamed(context, '/profile');
+                break;
+            }
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class CreateTransactionForm extends StatefulWidget {
+  final DateTime selectedDate;
+
+  CreateTransactionForm({required this.selectedDate});
+
+  @override
+  _CreateTransactionFormState createState() => _CreateTransactionFormState();
+}
+
+class _CreateTransactionFormState extends State<CreateTransactionForm> {
+  final _formKey = GlobalKey<FormState>();
+  String _type = 'expense';
+  double _amount = 0.0;
+  String _description = '';
+  String _status = 'High';
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Future<void> _createTransaction() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+    int? userId = prefs.getInt('user_id');
+
+    if (token != null && userId != null) {
+      try {
+        final response = await http.post(
+          Uri.parse('http://23.21.23.111/transaction/'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode({
+            'type': _type,
+            'user_id': userId,
+            'amount': _amount,
+            'date': widget.selectedDate.toIso8601String(),
+            'description': _description,
+            'status': _status,
+          }),
+        );
+
+        if (response.statusCode == 201) {
+          Navigator.of(context).pop(true);
+          await Navigator.pushNamed(context, '/reminders');
+        } else {
+          print('Error creating transaction: ${response.body}');
+        }
+      } catch (e) {
+        print('Error: $e');
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Fecha',
+                  enabled: false,
+                  border: const OutlineInputBorder(),
+                  suffixIcon: Icon(Icons.calendar_today),
+                ),
+                initialValue:
+                    DateFormat('dd/MM/yyyy').format(widget.selectedDate),
+              ),
+              const SizedBox(height: 16),
+              DropdownButtonFormField<String>(
+                value: _type,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _type = newValue!;
+                  });
+                },
+                items: <String>['expense', 'income']
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value == 'expense' ? 'Gasto' : 'Ingreso'),
+                  );
+                }).toList(),
+                decoration: const InputDecoration(labelText: 'Tipo'),
+                validator: (value) {
+                  if (value == null) {
+                    return 'Por favor selecciona un tipo';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                decoration: const InputDecoration(labelText: 'Monto'),
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+                ],
+                onSaved: (value) {
+                  _amount = double.tryParse(value!) ?? 0.0;
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor ingresa un monto';
+                  }
+                  if (double.tryParse(value) == null) {
+                    return 'Ingresa un monto válido';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                decoration: const InputDecoration(labelText: 'Descripción'),
+                onSaved: (value) {
+                  _description = value ?? '';
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor ingresa una descripción';
+                  }
+                  return null;
+                },
+              ),
+              DropdownButtonFormField<String>(
+                value: _status,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _status = newValue!;
+                  });
+                },
+                items: <String>['Low', 'Medium', 'High']
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value == 'Low'
+                        ? 'Baja'
+                        : value == 'Medium'
+                            ? 'Media'
+                            : 'Alta'),
+                  );
+                }).toList(),
+                decoration: const InputDecoration(labelText: 'Prioridad'),
+                validator: (value) {
+                  if (value == null) {
+                    return 'Por favor selecciona una prioridad';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    _formKey.currentState!.save();
+                    _createTransaction();
+                  }
+                },
+                child: const Text('Crear'),
+              ),
             ],
           ),
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        currentIndex: 0, // Update this to reflect the current page
-        onTap: (index) {
-          if (index == 0) {
-            Navigator.pushNamed(context, '/home');
-          } else if (index == 1) {
-            // Handle settings navigation
-          } else if (index == 2) {
-            Navigator.pushNamed(context, '/profile');
-          }
-        },
       ),
     );
   }
